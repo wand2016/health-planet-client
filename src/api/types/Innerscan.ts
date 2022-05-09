@@ -1,10 +1,10 @@
-type Tags = {
-  weight: "6021";
-  /** body fat percentage */
-  bfp: "6022";
-};
+export const TAG_WEIGHT = "6021";
+/** body fat percentage */
+export const TAG_BFP = "6022";
 
-type Tag = Tags[keyof Tags];
+type TagWeight = typeof TAG_WEIGHT;
+type TagBfp = typeof TAG_BFP;
+export type Tag = TagWeight | TagBfp;
 
 type Datum = {
   /** YmdHi */
@@ -16,10 +16,12 @@ type Datum = {
   tag: Tag;
 };
 
+export type Data = Datum[];
+
 export type InnerscanResponse = {
   /** Ymd */
   birth_date: string;
-  data: Datum[];
+  data: Data;
   height: string;
   sex: string;
 };
