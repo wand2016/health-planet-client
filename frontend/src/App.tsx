@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppBar from "@/layouts/AppBar";
 import useSWR, { Fetcher } from "swr";
 import axiosInstance from "@/api";
@@ -7,7 +7,12 @@ import { InnerscanResponse, TAG_BFP, TAG_WEIGHT } from "@/api/types/Innerscan";
 import { convolution } from "@/math/convolution";
 import { parse } from "date-fns";
 import { TextField } from "@mui/material";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  useSearchParams,
+} from "react-router-dom";
 
 const fetcher: Fetcher<InnerscanResponse> = async (url: string) => {
   const response = await axiosInstance.get(url);
@@ -35,9 +40,38 @@ const Auth: React.FC = () => {
 };
 
 const Callback: React.FC = () => {
-  // TODO: call token endpoint
+  const [code, setCode] = useState("");
+  const [searchParams] = useSearchParams();
 
-  return <div>callback endpoint</div>;
+  type Token = {
+    access_token: string;
+    expires_in: number;
+    refresh_token: string;
+    expires_at: string;
+  };
+
+  useEffect(() => {
+    (async () => {
+      if (code) {
+        const { data: accessToken } = await axiosInstance.post<Token>("token", {
+          code,
+        });
+
+        localStorage.setItem("token", accessToken.access_token);
+      }
+    })();
+  }, [code]);
+
+  useEffect(() => {
+    setCode(searchParams.get("code") ?? "");
+  }, []);
+
+  return (
+    <div>
+      callback endpoint.
+      <>{code}</>
+    </div>
+  );
 };
 
 // TODO: split

@@ -1,8 +1,10 @@
 require("dotenv").config();
 import express from "express";
 import { AuthorizationCode } from "simple-oauth2";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get("/auth", (req, res) => {
@@ -39,13 +41,24 @@ app.post<any, any, any, TokenRequestBody>("/token", async (req, res) => {
     },
   });
 
-  const accessToken = await client.getToken({
-    code: req.body.code, // from request
-    redirect_uri: process.env.REDIRECT_URI,
-    scope: "innerscan",
-  });
+  try {
+    const accessToken = await client.getToken(
+      {
+        code: req.body.code, // from request
+        redirect_uri: process.env.REDIRECT_URI,
+        scope: "innerscan",
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
+      } as any,
+      {
+        json: true,
+      }
+    );
 
-  res.json(accessToken);
+    res.json(accessToken.token);
+  } catch (e) {
+    return null;
+  }
 });
 
 app.listen(3001);
