@@ -6,39 +6,43 @@ import { Layout } from "@/components/Layout";
 import { AuthContextProvider } from "@/auth";
 import { Guest } from "@/components/auth/Guest";
 import { RequiresAuth } from "@/components/auth/RequiresAuth";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers";
 
 const App: React.FC = () => {
   return (
-    <AuthContextProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/auth"
-            element={
-              <Guest>
-                <Auth />
-              </Guest>
-            }
-          />
-          <Route
-            path="/callback"
-            element={
-              <Guest>
-                <Callback />
-              </Guest>
-            }
-          />
-          <Route
-            path="/"
-            element={
-              <RequiresAuth>
-                <Layout />
-              </RequiresAuth>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
-    </AuthContextProvider>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <AuthContextProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route
+              path="/auth"
+              element={
+                <Guest>
+                  <Auth />
+                </Guest>
+              }
+            />
+            <Route
+              path="/callback"
+              element={
+                <Guest>
+                  <Callback />
+                </Guest>
+              }
+            />
+            <Route
+              path="/"
+              element={
+                <RequiresAuth>
+                  <Layout />
+                </RequiresAuth>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </AuthContextProvider>
+    </LocalizationProvider>
   );
 };
 

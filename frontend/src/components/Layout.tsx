@@ -19,12 +19,16 @@ const fetcher: Fetcher<InnerscanResponse> = async (url: string) => {
 export function Layout() {
   const [sigma, setSigma] = useState(3);
 
+  //date=0&from=20110820150130&to=20110822150130
+
+  const [to, setTo] = useState();
+
   const tokenRegistry = useTokenRegistry();
   const token = tokenRegistry.get();
 
   const { data: responseBody, error } = useSWR<InnerscanResponse>(
     // TODO: axios interceptor
-    `/status/innerscan.json?access_token=${token}`,
+    `/status/innerscan.json?access_token=${token}&date=1`,
     fetcher
   );
 
@@ -67,12 +71,6 @@ export function Layout() {
   return (
     <div>
       <AppBar />
-      <TextField
-        label="Sigma"
-        type="number"
-        onChange={(e) => setSigma(Number(e.target.value))}
-        value={sigma}
-      />
       <LineChart width={500} height={500} data={dataForDraw}>
         <XAxis
           dataKey="date"
@@ -88,6 +86,28 @@ export function Layout() {
         <Line type="monotone" dataKey="bfpRaw" stroke="#00ff00" />
         <Line type="monotone" dataKey="bfpSmooth" stroke="#ff0000" />
       </LineChart>
+      <TextField
+        label="from"
+        type="date"
+        defaultValue="2022-04-01"
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+      <TextField
+        label="from"
+        type="date"
+        defaultValue=""
+        InputLabelProps={{
+          shrink: true,
+        }}
+      />
+      <TextField
+        label="Sigma"
+        type="number"
+        onChange={(e) => setSigma(Number(e.target.value))}
+        value={sigma}
+      />
     </div>
   );
 }
