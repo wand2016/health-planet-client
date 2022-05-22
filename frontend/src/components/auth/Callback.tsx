@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import axiosInstance from "@/api";
+import { tokenRegistry } from "@/auth";
 
 export const Callback: React.FC = () => {
   const [code, setCode] = useState("");
@@ -20,7 +21,7 @@ export const Callback: React.FC = () => {
           code,
         });
 
-        localStorage.setItem("token", accessToken.access_token);
+        tokenRegistry.set(accessToken.access_token);
       }
     })();
   }, [code]);
