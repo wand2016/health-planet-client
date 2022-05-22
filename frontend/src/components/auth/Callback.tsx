@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axiosInstance from "@/api";
-import { tokenRegistry } from "@/auth";
+import { useTokenRegistry } from "@/auth";
 
 export const Callback: React.FC = () => {
   const [code, setCode] = useState("");
   const [searchParams] = useSearchParams();
+  const tokenRegistry = useTokenRegistry();
+
+  const navigate = useNavigate();
 
   type Token = {
     access_token: string;
@@ -22,6 +25,8 @@ export const Callback: React.FC = () => {
         });
 
         tokenRegistry.set(accessToken.access_token);
+
+        navigate("/", { replace: true });
       }
     })();
   }, [code]);
@@ -30,10 +35,5 @@ export const Callback: React.FC = () => {
     setCode(searchParams.get("code") ?? "");
   }, []);
 
-  return (
-    <div>
-      callback endpoint.
-      <>{code}</>
-    </div>
-  );
+  return <div>callback endpoint.</div>;
 };
