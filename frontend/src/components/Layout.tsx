@@ -51,14 +51,14 @@ export function Layout() {
   );
 
   type DatumForDraw = {
-    date: Date;
+    date: number;
     bfpRaw: number;
     bfpSmooth: number;
   };
   const dataForDraw: DatumForDraw[] = [];
   for (let i = 0; i < dataBfp.length; ++i) {
     dataForDraw.push({
-      date: new Date(dataBfp[i].x * 1000),
+      date: dataBfp[i].x * 1000,
       bfpRaw: dataBfp[i].y,
       bfpSmooth: dataBfpSmooth[i].y,
     });
@@ -74,7 +74,12 @@ export function Layout() {
         value={sigma}
       />
       <LineChart width={500} height={500} data={dataForDraw}>
-        <XAxis dataKey="date" />
+        <XAxis
+          dataKey="date"
+          domain={["dataMin", "dataMax"]}
+          tickFormatter={(unixTime) => new Date(unixTime).toLocaleDateString()}
+          type="number"
+        />
         <YAxis />
         <Line type="monotone" dataKey="bfpRaw" stroke="#00ff00" />
         <Line type="monotone" dataKey="bfpSmooth" stroke="#ff0000" />
