@@ -3,6 +3,8 @@ import express from "express";
 import { AuthorizationCode } from "simple-oauth2";
 import cors from "cors";
 
+import axiosInstance from "./src/api";
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -57,7 +59,19 @@ app.post<any, any, any, TokenRequestBody>("/token", async (req, res) => {
 
     res.json(accessToken.token);
   } catch (e) {
-    return null;
+    console.error(e);
+  }
+});
+
+app.get("/status/innerscan.json", async (req, res) => {
+  try {
+    const { data } = await axiosInstance.get("/status/innerscan.json", {
+      params: req.query,
+    });
+
+    res.json(data);
+  } catch (e) {
+    console.error(e);
   }
 });
 

@@ -7,6 +7,7 @@ import AppBar from "@/layouts/AppBar";
 import { TextField } from "@mui/material";
 import { Line, LineChart, XAxis, YAxis } from "recharts";
 import axiosInstance from "@/api";
+import { useTokenRegistry } from "@/auth";
 
 const fetcher: Fetcher<InnerscanResponse> = async (url: string) => {
   const response = await axiosInstance.get(url);
@@ -16,11 +17,14 @@ const fetcher: Fetcher<InnerscanResponse> = async (url: string) => {
 
 // TODO: split
 export function Layout() {
-  location.href = "http://localhost:3001/auth";
-
   const [sigma, setSigma] = useState(3);
+
+  const tokenRegistry = useTokenRegistry();
+  const token = tokenRegistry.get();
+
   const { data: responseBody, error } = useSWR<InnerscanResponse>(
-    "/status/innerscan.json",
+    // TODO: axios interceptor
+    `/status/innerscan.json?access_token=${token}`,
     fetcher
   );
 
