@@ -80,7 +80,11 @@ export function Layout() {
           tickFormatter={(unixTime) => new Date(unixTime).toLocaleDateString()}
           type="number"
         />
-        <YAxis />
+        <YAxis
+          dataKey="bfpRaw"
+          domain={["dataMin", "dataMax"]}
+          tickCount={10}
+        />
         <Line type="monotone" dataKey="bfpRaw" stroke="#00ff00" />
         <Line type="monotone" dataKey="bfpSmooth" stroke="#ff0000" />
       </LineChart>
