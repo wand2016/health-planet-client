@@ -7,6 +7,7 @@ import { InnerscanResponse, TAG_BFP, TAG_WEIGHT } from "@/api/types/Innerscan";
 import { convolution } from "@/math/convolution";
 import { parse } from "date-fns";
 import { TextField } from "@mui/material";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 const fetcher: Fetcher<InnerscanResponse> = async (url: string) => {
   const response = await axiosInstance.get(url);
@@ -14,7 +15,35 @@ const fetcher: Fetcher<InnerscanResponse> = async (url: string) => {
   return response.data;
 };
 
-function App() {
+const App: React.FC = () => {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/callback" element={<Callback />} />
+        <Route path="/" element={<Layout />} />
+      </Routes>
+    </BrowserRouter>
+  );
+};
+
+const Auth: React.FC = () => {
+  // redirect to login page
+  location.href = "http://localhost:3001/auth";
+
+  return <div>redirecting...</div>;
+};
+
+const Callback: React.FC = () => {
+  // TODO: call token endpoint
+
+  return <div>callback endpoint</div>;
+};
+
+// TODO: split
+function Layout() {
+  location.href = "http://localhost:3001/auth";
+
   const [sigma, setSigma] = useState(3);
   const { data: responseBody, error } = useSWR<InnerscanResponse>(
     "/status/innerscan.json",
@@ -58,21 +87,27 @@ function App() {
   }
 
   return (
-    <div>
-      <AppBar />
-      <TextField
-        label="Sigma"
-        type="number"
-        onChange={(e) => setSigma(Number(e.target.value))}
-        value={sigma}
-      />
-      <LineChart width={500} height={500} data={dataForDraw}>
-        <XAxis dataKey="date" />
-        <YAxis />
-        <Line type="monotone" dataKey="bfpRaw" stroke="#00ff00" />
-        <Line type="monotone" dataKey="bfpSmooth" stroke="#ff0000" />
-      </LineChart>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/auth"></Route>
+      </Routes>
+
+      <div>
+        <AppBar />
+        <TextField
+          label="Sigma"
+          type="number"
+          onChange={(e) => setSigma(Number(e.target.value))}
+          value={sigma}
+        />
+        <LineChart width={500} height={500} data={dataForDraw}>
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Line type="monotone" dataKey="bfpRaw" stroke="#00ff00" />
+          <Line type="monotone" dataKey="bfpSmooth" stroke="#ff0000" />
+        </LineChart>
+      </div>
+    </BrowserRouter>
   );
 }
 
