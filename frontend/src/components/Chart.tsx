@@ -92,6 +92,7 @@ const Chart: React.FC<ChartProps> = ({ dataForDraw, visibility }) => {
       <XAxis
         dataKey="date"
         domain={["dataMin", "dataMax"]}
+        tickCount={10}
         tickFormatter={(unixTime) => new Date(unixTime).toLocaleDateString()}
         type="number"
       />
