@@ -29,7 +29,7 @@ export function Body() {
   const toDate = to ? parse(to, "yyyy-MM-dd", new Date()) : null;
 
   return (
-    <Container>
+    <Container sx={{ my: 4 }}>
       <Grid container spacing={1} columns={12}>
         <Grid item xs={4}>
           <Form
