@@ -1,4 +1,4 @@
-type Datum = {
+export type Datum = {
   x: number;
   y: number;
 };
@@ -43,3 +43,12 @@ export function convolution(
 
   return ret;
 }
+
+const gaussian = (sigma: number) => (x: number) =>
+  Math.exp((-x * x) / 2 / sigma / sigma);
+
+export const gaussianBlur =
+  (sigma: number) =>
+  (data: Datum[]): Datum[] => {
+    return convolution(data, gaussian(sigma));
+  };

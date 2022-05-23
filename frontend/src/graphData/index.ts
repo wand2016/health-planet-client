@@ -1,31 +1,37 @@
-import { Data, TAG_BFP } from "@/api/types/Innerscan";
-import { convolution } from "@/math/convolution";
+import {
+  Data as InnerscanData,
+  TAG_BFP,
+  TAG_WEIGHT,
+} from "@/api/types/Innerscan";
+import { Datum, gaussianBlur } from "@/math/convolution";
 import { parse } from "date-fns";
 
 type DatumForDraw = {
   date: number;
   bfpRaw: number;
   bfpSmooth: number;
+  weightRaw: number;
+  weightSmooth: number;
 };
 
 export type DataForDraw = DatumForDraw[];
 
 /**
  * @param rawData
- * @param sigma 標準偏差
+ * @param sigma 標準偏差(日)
  */
-export const compute = (rawData: Data, sigma: number): DataForDraw => {
-  const rawDataBfp = rawData.filter((datum) => datum.tag === TAG_BFP); //
+export const compute = (rawData: InnerscanData, sigma: number): DataForDraw => {
+  const rawDataBfp = rawData.filter((datum) => datum.tag === TAG_BFP);
+  const rawDataWeight = rawData.filter((datum) => datum.tag === TAG_WEIGHT);
 
-  const dataBfp = rawDataBfp.map((datum) => ({
-    x: parse(datum.date, "yyyyMMddHHmm", new Date()).getTime() / 1000,
-    y: Number(datum.keydata),
-  }));
+  const dataBfp = toDatumArray(rawDataBfp);
+  const dataWeight = toDatumArray(rawDataWeight);
 
-  const sigmaInSec = sigma * 60 * 60 * 24; // 3day
-  const dataBfpSmooth = convolution(dataBfp, (x) =>
-    Math.exp((-x * x) / 2 / sigmaInSec / sigmaInSec)
-  );
+  const sigmaInSec = dayToSecond(sigma);
+  const blur = gaussianBlur(sigmaInSec);
+
+  const dataBfpSmooth = blur(dataBfp);
+  const dataWeightSmooth = blur(dataWeight);
 
   const dataForDraw: DataForDraw = [];
   for (let i = 0; i < dataBfp.length; ++i) {
@@ -33,8 +39,21 @@ export const compute = (rawData: Data, sigma: number): DataForDraw => {
       date: dataBfp[i].x * 1000,
       bfpRaw: dataBfp[i].y,
       bfpSmooth: dataBfpSmooth[i].y,
+      weightRaw: dataWeight[i].y,
+      weightSmooth: dataWeightSmooth[i].y,
     });
   }
 
   return dataForDraw;
 };
+
+function toDatumArray(rawData: InnerscanData): Datum[] {
+  return rawData.map((rawDatum) => ({
+    x: parse(rawDatum.date, "yyyyMMddHHmm", new Date()).getTime() / 1000,
+    y: Number(rawDatum.keydata),
+  }));
+}
+
+function dayToSecond(days: number): number {
+  return days * 60 * 60 * 24;
+}
