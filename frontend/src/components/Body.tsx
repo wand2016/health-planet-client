@@ -1,28 +1,31 @@
-import React, { useState } from "react";
+import React, { ComponentProps, useCallback, useState } from "react";
 import { TextField } from "@mui/material";
 import { ChartContainer } from "@/components/Chart";
-import { parse } from "date-fns";
+import { format, parse } from "date-fns";
+import createPersistedState from "use-persisted-state";
+
+const useFrom = createPersistedState<string>("form-from");
+const useTo = createPersistedState<string>("form-to");
 
 export function Body() {
   const [sigma, setSigma] = useState(3);
 
-  const [from, setFrom] = useState<Date | null>(null);
-  const [to, setTo] = useState<Date | null>(null);
+  const [from, setFrom] = useFrom("");
+  const [to, setTo] = useTo("");
+
+  const fromDate = from ? parse(from, "yyyy-MM-dd", new Date()) : null;
+  const toDate = to ? parse(to, "yyyy-MM-dd", new Date()) : null;
 
   return (
     <>
-      <ChartContainer sigma={sigma} from={from} to={to} />
+      <ChartContainer sigma={sigma} from={fromDate} to={toDate} />
       <TextField
         label="日付(from)"
         type="date"
-        defaultValue="2022-04-01"
         onChange={(e) => {
-          if (e.target.value) {
-            setFrom(parse(e.target.value, "yyyy-MM-dd", new Date()));
-          } else {
-            setFrom(null);
-          }
+          setFrom(e.target.value);
         }}
+        value={from}
         InputLabelProps={{
           shrink: true,
         }}
@@ -30,14 +33,10 @@ export function Body() {
       <TextField
         label="日付(to)"
         type="date"
-        defaultValue="2022-05-23"
         onChange={(e) => {
-          if (e.target.value) {
-            setTo(parse(e.target.value, "yyyy-MM-dd", new Date()));
-          } else {
-            setTo(null);
-          }
+          setTo(e.target.value);
         }}
+        value={to}
         InputLabelProps={{
           shrink: true,
         }}
