@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Container } from "@mui/material";
+import { Container, Grid } from "@mui/material";
 import { ChartContainer } from "@/components/Chart";
 import { parse } from "date-fns";
 import createPersistedState from "use-persisted-state";
@@ -30,37 +30,41 @@ export function Body() {
 
   return (
     <Container>
-      <Box sx={{ my: 2 }}>
-        <ChartContainer
-          sigma={sigma}
-          from={fromDate}
-          to={toDate}
-          bone={bone}
-          visibility={visibility}
-        />
-        <Form
-          sigma={{
-            value: sigma,
-            set: setSigma,
-          }}
-          from={{
-            value: from,
-            set: setFrom,
-          }}
-          to={{
-            value: to,
-            set: setTo,
-          }}
-          bone={{
-            value: bone,
-            set: setBone,
-          }}
-          visibility={{
-            value: visibility,
-            set: setVisibility,
-          }}
-        />
-      </Box>
+      <Grid container spacing={1} columns={12}>
+        <Grid item xs={4}>
+          <Form
+            sigma={{
+              value: sigma,
+              set: setSigma,
+            }}
+            from={{
+              value: from,
+              set: setFrom,
+            }}
+            to={{
+              value: to,
+              set: setTo,
+            }}
+            bone={{
+              value: bone,
+              set: setBone,
+            }}
+            visibility={{
+              value: visibility,
+              set: setVisibility,
+            }}
+          />
+        </Grid>
+        <Grid item xs={8}>
+          <ChartContainer
+            sigma={sigma}
+            from={fromDate}
+            to={toDate}
+            bone={bone}
+            visibility={visibility}
+          />
+        </Grid>
+      </Grid>
     </Container>
   );
 }
