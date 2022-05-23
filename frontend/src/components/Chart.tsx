@@ -49,6 +49,26 @@ const Chart: React.FC<ChartProps> = ({ dataForDraw }) => {
         dataKey="weightSmooth"
         stroke="#FF0000"
       />
+      <Line yAxisId="weight" type="monotone" dataKey="bfRaw" stroke="#FFDDDD" />
+      <Line
+        yAxisId="weight"
+        type="monotone"
+        dataKey="bfSmooth"
+        stroke="#FF0000"
+      />
+      <Line
+        yAxisId="weight"
+        type="monotone"
+        dataKey="muscleRaw"
+        stroke="#FFDDDD"
+      />
+      <Line
+        yAxisId="weight"
+        type="monotone"
+        dataKey="muscleSmooth"
+        stroke="#FF0000"
+      />
+
       <Line
         yAxisId="percentage"
         type="monotone"
@@ -69,12 +89,14 @@ type ChartContainerProps = {
   sigma: number;
   from: Date | null;
   to: Date | null;
+  bone: number;
 };
 
 export const ChartContainer: React.FC<ChartContainerProps> = ({
   sigma,
   from,
   to,
+  bone,
 }) => {
   const tokenRegistry = useTokenRegistry();
   const token = tokenRegistry.get();
@@ -102,7 +124,7 @@ export const ChartContainer: React.FC<ChartContainerProps> = ({
     return <Skeleton variant="rectangular" width={500} height={500} />;
   }
 
-  const dataForDraw = compute(responseBody.data, sigma);
+  const dataForDraw = compute(responseBody.data, sigma, bone);
 
   return <Chart dataForDraw={dataForDraw} />;
 };

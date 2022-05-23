@@ -10,9 +10,10 @@ type FormType = {
   sigma: Model<number>;
   from: Model<string>;
   to: Model<string>;
+  bone: Model<number>;
 };
 
-export const Form: React.FC<FormType> = ({ sigma, from, to }) => {
+export const Form: React.FC<FormType> = ({ sigma, from, to, bone }) => {
   return (
     <FormControl>
       <TextField
@@ -39,6 +40,12 @@ export const Form: React.FC<FormType> = ({ sigma, from, to }) => {
         type="number"
         onChange={(e) => sigma.set(Number(e.target.value))}
         value={sigma.value}
+      />
+      <TextField
+        label="骨量(kg)"
+        type="number"
+        onChange={(e) => bone.set(Number(e.target.value))}
+        value={bone.value}
       />
     </FormControl>
   );

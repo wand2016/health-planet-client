@@ -12,8 +12,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 const App: React.FC = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <AuthContextProvider>
-        <BrowserRouter>
+      <BrowserRouter>
+        <AuthContextProvider>
           <Routes>
             <Route
               path="/auth"
@@ -40,8 +40,8 @@ const App: React.FC = () => {
               }
             />
           </Routes>
-        </BrowserRouter>
-      </AuthContextProvider>
+        </AuthContextProvider>
+      </BrowserRouter>
     </LocalizationProvider>
   );
 };

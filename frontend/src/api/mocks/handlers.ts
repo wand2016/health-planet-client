@@ -11,7 +11,7 @@ function assertInnerscanResponse(
 
 export const handlers = [
   rest.get(
-    /https:\/\/www.healthplanet.jp\/status\/innerscan.json/,
+    /http:\/\/localhost:3001\/status\/innerscan.json/,
     async (req, res, ctx) => {
       await sleep(1000);
 

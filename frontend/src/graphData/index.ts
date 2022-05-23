@@ -12,26 +12,47 @@ type DatumForDraw = {
   bfpSmooth: number;
   weightRaw: number;
   weightSmooth: number;
+  bfRaw: number;
+  bfSmooth: number;
+  muscleRaw: number;
+  muscleSmooth: number;
 };
 
 export type DataForDraw = DatumForDraw[];
 
-/**
- * @param rawData
- * @param sigma 標準偏差(日)
- */
-export const compute = (rawData: InnerscanData, sigma: number): DataForDraw => {
+export const compute = (
+  rawData: InnerscanData,
+  /** 標準偏差(日) */
+  sigma: number,
+  bone: number
+): DataForDraw => {
   const rawDataBfp = rawData.filter((datum) => datum.tag === TAG_BFP);
   const rawDataWeight = rawData.filter((datum) => datum.tag === TAG_WEIGHT);
 
   const dataBfp = toDatumArray(rawDataBfp);
   const dataWeight = toDatumArray(rawDataWeight);
+  const dataBf: Datum[] = dataBfp.map(({ x, y }, i) => {
+    return {
+      x,
+      /** 体重 * 体脂肪率(%) */
+      y: (dataWeight[i].y * y) / 100,
+    };
+  });
+  const dataMuscle: Datum[] = dataWeight.map(({ x, y }, i) => {
+    return {
+      x,
+      /** 体重 - 体脂肪量 - 骨量 */
+      y: y - dataBf[i].y - bone,
+    };
+  });
 
   const sigmaInSec = dayToSecond(sigma);
   const blur = gaussianBlur(sigmaInSec);
 
   const dataBfpSmooth = blur(dataBfp);
   const dataWeightSmooth = blur(dataWeight);
+  const dataBfSmooth = blur(dataBf);
+  const dataMuscleSmooth = blur(dataMuscle);
 
   const dataForDraw: DataForDraw = [];
   for (let i = 0; i < dataBfp.length; ++i) {
@@ -41,6 +62,10 @@ export const compute = (rawData: InnerscanData, sigma: number): DataForDraw => {
       bfpSmooth: dataBfpSmooth[i].y,
       weightRaw: dataWeight[i].y,
       weightSmooth: dataWeightSmooth[i].y,
+      bfRaw: dataBf[i].y,
+      bfSmooth: dataBfSmooth[i].y,
+      muscleRaw: dataMuscle[i].y,
+      muscleSmooth: dataMuscleSmooth[i].y,
     });
   }
 
