@@ -69,6 +69,8 @@ export const compute = (
     });
   }
 
+  console.log(dataForDraw);
+
   return dataForDraw;
 };
 

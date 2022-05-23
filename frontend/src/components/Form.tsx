@@ -1,21 +1,68 @@
 import React from "react";
-import { FormControl, TextField } from "@mui/material";
+import {
+  Checkbox,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  TextField,
+} from "@mui/material";
+
+export const visibilityKeys = [
+  "weight",
+  "bodyFatPercentage",
+  "bodyFat",
+  "muscle",
+  "raw",
+  "smooth",
+] as const;
 
 type Model<T> = {
   value: T;
   set(v: T): void;
+  set(fn: (v: T) => T): void;
 };
 
+type VisibilityKey = typeof visibilityKeys[number];
+export type Visibility = Record<VisibilityKey, boolean>;
+
 type FormType = {
+  visibility: Model<Visibility>;
   sigma: Model<number>;
   from: Model<string>;
   to: Model<string>;
   bone: Model<number>;
 };
 
-export const Form: React.FC<FormType> = ({ sigma, from, to, bone }) => {
+export const Form: React.FC<FormType> = ({
+  visibility,
+  sigma,
+  from,
+  to,
+  bone,
+}) => {
   return (
     <FormControl>
+      <FormGroup>
+        {visibilityKeys.map((visibilityKey) => (
+          <FormControlLabel
+            key={visibilityKey}
+            control={
+              <Checkbox
+                checked={visibility.value[visibilityKey]}
+                onChange={(e) => {
+                  visibility.set((prev) => {
+                    return {
+                      ...prev,
+                      [visibilityKey]: e.target.checked,
+                    };
+                  });
+                }}
+              />
+            }
+            label={visibilityKey}
+          />
+        ))}
+      </FormGroup>
       <TextField
         label="日付(from)"
         type="date"

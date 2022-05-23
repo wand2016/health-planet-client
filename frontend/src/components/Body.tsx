@@ -3,14 +3,23 @@ import { Box, Container } from "@mui/material";
 import { ChartContainer } from "@/components/Chart";
 import { parse } from "date-fns";
 import createPersistedState from "use-persisted-state";
-import { Form } from "@/components/Form";
+import { Form, Visibility } from "@/components/Form";
 
+const useVisibility = createPersistedState<Visibility>("form-visibility");
 const useSigma = createPersistedState<number>("form-sigma");
 const useFrom = createPersistedState<string>("form-from");
 const useTo = createPersistedState<string>("form-to");
 const useBone = createPersistedState<number>("form-bone");
 
 export function Body() {
+  const [visibility, setVisibility] = useVisibility({
+    weight: true,
+    bodyFatPercentage: true,
+    bodyFat: true,
+    muscle: true,
+    raw: true,
+    smooth: true,
+  });
   const [sigma, setSigma] = useSigma(3);
   const [from, setFrom] = useFrom("");
   const [to, setTo] = useTo("");
@@ -22,7 +31,13 @@ export function Body() {
   return (
     <Container>
       <Box sx={{ my: 2 }}>
-        <ChartContainer sigma={sigma} from={fromDate} to={toDate} bone={bone} />
+        <ChartContainer
+          sigma={sigma}
+          from={fromDate}
+          to={toDate}
+          bone={bone}
+          visibility={visibility}
+        />
         <Form
           sigma={{
             value: sigma,
@@ -39,6 +54,10 @@ export function Body() {
           bone={{
             value: bone,
             set: setBone,
+          }}
+          visibility={{
+            value: visibility,
+            set: setVisibility,
           }}
         />
       </Box>
