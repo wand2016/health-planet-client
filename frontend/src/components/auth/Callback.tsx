@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import axiosInstance from "@/api";
+import { axiosInstance } from "@/api";
 import { useTokenRegistry } from "@/auth";
 
 export const Callback: React.FC = () => {

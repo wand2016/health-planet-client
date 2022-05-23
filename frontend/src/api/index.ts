@@ -1,8 +1,14 @@
 import axios from "axios";
+import { Fetcher } from "swr";
+import { InnerscanResponse } from "@/api/types/Innerscan";
 
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
   // baseURL: "https://www.healthplanet.jp/",
   baseURL: "http://localhost:3001/",
 });
 
-export default axiosInstance;
+export const fetcher: Fetcher<InnerscanResponse> = async (url: string) => {
+  const response = await axiosInstance.get(url);
+
+  return response.data;
+};
