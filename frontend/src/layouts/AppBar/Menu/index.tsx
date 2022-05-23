@@ -1,5 +1,6 @@
 import { Menu, MenuItem } from "@mui/material";
 import React from "react";
+import { useTokenRegistry } from "@/auth";
 
 type Props = {
   anchorEl: HTMLElement | null;
@@ -7,6 +8,13 @@ type Props = {
 };
 
 const MyMenu: React.FC<Props> = (props) => {
+  const tokenRegistry = useTokenRegistry();
+
+  const handleLogout = () => {
+    tokenRegistry.set("");
+    props.onClose();
+  };
+
   return (
     <Menu
       id="menu-appbar"
@@ -24,7 +32,7 @@ const MyMenu: React.FC<Props> = (props) => {
       onClose={props.onClose}
     >
       <MenuItem onClick={props.onClose}>OAuth2.0 Settings</MenuItem>
-      <MenuItem onClick={props.onClose}>Logout</MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>
   );
 };

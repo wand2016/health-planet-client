@@ -7,6 +7,7 @@ import { useTokenRegistry } from "@/auth";
 import { compute } from "@/graphData";
 import { DataForDraw } from "@/graphData";
 import { format } from "date-fns";
+import { Skeleton } from "@mui/material";
 
 type ChartProps = {
   dataForDraw: DataForDraw;
@@ -42,8 +43,6 @@ export const ChartContainer: React.FC<ChartContainerProps> = ({
   const tokenRegistry = useTokenRegistry();
   const token = tokenRegistry.get();
 
-  console.log({ from, to });
-
   const { data: responseBody, error } = useSWR<InnerscanResponse>(
     // TODO: axios interceptor?
     () => {
@@ -64,7 +63,7 @@ export const ChartContainer: React.FC<ChartContainerProps> = ({
   }
 
   if (!responseBody) {
-    return <div>...loading...</div>;
+    return <Skeleton variant="rectangular" width={500} height={500} />;
   }
 
   const dataForDraw = compute(responseBody.data, sigma);
