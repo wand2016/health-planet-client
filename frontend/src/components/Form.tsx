@@ -1,9 +1,11 @@
-import React from "react";
+import React, { FormEvent } from "react";
 import {
+  Box,
   Checkbox,
   FormControl,
   FormControlLabel,
   FormGroup,
+  FormLabel,
   TextField,
 } from "@mui/material";
 
@@ -41,59 +43,96 @@ export const Form: React.FC<FormType> = ({
   bone,
 }) => {
   return (
-    <FormControl>
-      <FormGroup>
-        {visibilityKeys.map((visibilityKey) => (
-          <FormControlLabel
-            key={visibilityKey}
-            control={
-              <Checkbox
-                checked={visibility.value[visibilityKey]}
-                onChange={(e) => {
-                  visibility.set((prev) => {
-                    return {
-                      ...prev,
-                      [visibilityKey]: e.target.checked,
-                    };
-                  });
-                }}
-              />
-            }
-            label={visibilityKey}
+    <Box
+      component="form"
+      sx={{
+        "& .MuiTextField-root": { m: 1, width: "25ch" },
+      }}
+      onSubmit={(e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+      }}
+    >
+      <FormControl>
+        <FormLabel component="legend">表示するグラフを選択</FormLabel>
+        <FormGroup>
+          {visibilityKeys.map((visibilityKey) => (
+            <FormControlLabel
+              key={visibilityKey}
+              control={
+                <Checkbox
+                  checked={visibility.value[visibilityKey]}
+                  onChange={(e) => {
+                    visibility.set((prev) => {
+                      return {
+                        ...prev,
+                        [visibilityKey]: e.target.checked,
+                      };
+                    });
+                  }}
+                />
+              }
+              label={visibilityKey}
+            />
+          ))}
+        </FormGroup>
+      </FormControl>
+      <FormControl>
+        <FormLabel component="legend">日付</FormLabel>
+        <FormGroup>
+          <TextField
+            label="from / 空で3ヶ月前"
+            type="date"
+            onChange={(e) => {
+              from.set(e.target.value);
+            }}
+            value={from.value}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
-        ))}
-      </FormGroup>
-      <TextField
-        label="日付(from)"
-        type="date"
-        onChange={(e) => {
-          from.set(e.target.value);
-        }}
-        value={from.value}
-      />
-      <TextField
-        label="日付(to)"
-        type="date"
-        onChange={(e) => {
-          to.set(e.target.value);
-        }}
-        value={to.value}
-        InputLabelProps={{
-          shrink: false,
-        }}
-      />
-      <TextField
-        label="標準偏差(日)"
-        type="number"
-        onChange={(e) => sigma.set(Number(e.target.value))}
-        value={sigma.value}
-      />
-      <TextField
-        label="骨量(kg)"
-        type="number"
-        onChange={(e) => bone.set(Number(e.target.value))}
-        value={bone.value}
-      />
-    </FormControl>
+          <TextField
+            label="to / 空で現在日時"
+            type="date"
+            onChange={(e) => {
+              to.set(e.target.value);
+            }}
+            value={to.value}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </FormGroup>
+      </FormControl>
+      <FormControl>
+        <FormLabel component="legend">blur</FormLabel>
+        <FormGroup>
+          <TextField
+            label="Gaussianの標準偏差(日)"
+            type="number"
+            onChange={(e) => sigma.set(Number(e.target.value))}
+            value={sigma.value}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{ min: 1 }}
+          />
+        </FormGroup>
+      </FormControl>
+      <FormControl>
+        <FormLabel component="legend">体組成入力値</FormLabel>
+        <FormGroup>
+          <TextField
+            label="骨量(kg)"
+            type="number"
+            onChange={(e) => bone.set(Number(e.target.value))}
+            value={bone.value}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{ min: 1, step: 0.1 }}
+          />
+        </FormGroup>
+      </FormControl>
+    </Box>
   );
 };
