@@ -23,7 +23,7 @@ custom:
   buildClient:
     packager: yarn
     command: build
-    cwd: ../backend
+    cwd: ../../backend
     verbose: true
   serverless-layers:
     functions:

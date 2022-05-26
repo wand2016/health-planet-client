@@ -4,6 +4,7 @@
   "main": "handler.js",
   "license": "MIT",
   "scripts": {
+    "build": "sls client build",
     "offline": "sls offline"
   },
   "devDependencies": {
