@@ -1,4 +1,4 @@
-service: health-planet-client
+service: health-planet-client-backend
 frameworkVersion: '3'
 configValidationMode: error
 useDotenv: true
@@ -6,10 +6,10 @@ deprecationNotificationMode: warn:summary
 
 provider:
   name: aws
-  stage: prod
+  stage: ${opt:stage, 'prod'}
   region: ap-northeast-1
   profile: hobby
-  stackName: health-planet-client
+  stackName: health-planet-client-backend
   tags:
     service: health-planet-client
   deploymentMethod: direct
