@@ -1,0 +1,60 @@
+service: health-planet-client
+frameworkVersion: '3'
+configValidationMode: error
+useDotenv: true
+deprecationNotificationMode: warn:summary
+
+provider:
+  name: aws
+  stage: prod
+  region: ap-northeast-1
+  profile: hobby
+  stackName: health-planet-client
+  tags:
+    service: health-planet-client
+  deploymentMethod: direct
+#  notificationArns:
+#    -
+  tracing:
+    apiGateway: true
+    lambda: true
+
+custom:
+  buildClient:
+    packager: yarn
+    command: build
+    cwd: ../backend
+    verbose: true
+  serverless-layers:
+    functions:
+      - backend
+    dependenciesPath: ../backend/package.json
+
+functions:
+  backend:
+    handler: handler.main
+    runtime: nodejs16.x
+    memorySize: 512
+    timeout: 3
+#    environment:
+#      FOO: BAR
+    name: health-planet-client-${sls:stage}-lambda
+    description: API backend
+    package:
+      patterns:
+        - handler.js
+    events:
+      - http:
+          path: /auth
+          method: GET
+      - http:
+          path: /token
+          method: POST
+      - http:
+          path: /status/innerscan.json
+          method: GET
+
+plugins:
+  - serverless-offline
+  - serverless-build-client
+  - serverless-layers

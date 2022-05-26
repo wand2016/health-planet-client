@@ -1,0 +1,19 @@
+{
+  "name": "infra",
+  "version": "1.0.0",
+  "main": "handler.js",
+  "license": "MIT",
+  "scripts": {
+    "offline": "sls offline"
+  },
+  "devDependencies": {
+    "serverless": "^3.18.2"
+  },
+  "dependencies": {
+    "@vendia/serverless-express": "^4.8.0",
+    "backend": "../backend",
+    "serverless-build-client": "^2.5.0",
+    "serverless-layers": "^2.5.4",
+    "serverless-offline": "^8.8.0"
+  }
+}
