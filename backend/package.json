@@ -6,12 +6,15 @@
   "scripts": {
     "dev": "ts-node --files src/index.ts",
     "build": "tsc",
+    "offline": "sls offline",
+    "deploy": "sls deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vendia/serverless-express": "^4.8.0",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
@@ -21,8 +24,14 @@
   "devDependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@types/node": "^17.0.35",
     "@types/simple-oauth2": "^4.1.1",
     "prettier": "^2.6.2",
+    "serverless": "^3.18.2",
+    "serverless-dotenv-plugin": "^4.0.1",
+    "serverless-functions-base-path": "^1.0.32",
+    "serverless-layers": "^2.5.4",
+    "serverless-offline": "^8.8.0",
     "ts-node": "^10.8.0",
     "typescript": "^4.7.2"
   }

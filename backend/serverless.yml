@@ -13,22 +13,16 @@ provider:
   tags:
     service: health-planet-client
   deploymentMethod: direct
-#  notificationArns:
-#    -
+  runtime: nodejs16.x
+
   tracing:
     apiGateway: true
     lambda: true
 
 custom:
-  buildClient:
-    packager: yarn
-    command: build
-    cwd: ../../backend
-    verbose: true
+  functionsBasePath: ./dist/
   serverless-layers:
-    functions:
-      - backend
-    dependenciesPath: ../backend/package.json
+    layersDeploymentBucket: d-hori-health-planet-client-prod-layers
 
 functions:
   backend:
@@ -40,9 +34,6 @@ functions:
 #      FOO: BAR
     name: health-planet-client-${sls:stage}-lambda
     description: API backend
-    package:
-      patterns:
-        - handler.js
     events:
       - http:
           path: /auth
@@ -55,6 +46,7 @@ functions:
           method: GET
 
 plugins:
+  - serverless-functions-base-path
   - serverless-offline
-  - serverless-build-client
   - serverless-layers
+  - serverless-dotenv-plugin
