@@ -1,6 +1,7 @@
 locals {
-  service = "${var.service}-${var.env}"
-  name    = "d-hori-${local.service}-web-s3"
+  service       = "${var.service}-${var.env}"
+  name          = "d-hori-${local.service}-web-s3"
+  frontend_root = "../../../../frontend"
 }
 
 resource "aws_s3_bucket" "web" {
@@ -31,7 +32,7 @@ resource "aws_s3_bucket_object" "artifacts" {
 
 module "distribution_files" {
   source   = "registry.terraform.io/hashicorp/dir/template"
-  base_dir = "../../../../frontend/dist"
+  base_dir = "${local.frontend_root}/dist"
 
   depends_on = [null_resource.build]
 }
@@ -42,6 +43,6 @@ resource "null_resource" "build" {
   }
 
   provisioner "local-exec" {
-    command = "yarn --cwd ../../../../frontend build"
+    command = "yarn --cwd ${local.frontend_root} build"
   }
 }

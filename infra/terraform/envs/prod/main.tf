@@ -13,3 +13,9 @@ module "cf" {
   bucket_arn                  = module.web-s3.arn
   bucket_regional_domain_name = module.web-s3.bucket_regional_domain_name
 }
+
+module "lambda" {
+  source  = "../../modules/lambda"
+  service = var.service
+  env     = var.env
+}

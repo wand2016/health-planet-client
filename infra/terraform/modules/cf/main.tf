@@ -57,7 +57,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   custom_error_response {
     error_code         = 403
     response_code      = 200
-    response_page_path = "/index.html"  # for history API SPA Routing
+    response_page_path = "/index.html" # for history API SPA Routing
   }
   enabled             = true
   price_class         = "PriceClass_200"
