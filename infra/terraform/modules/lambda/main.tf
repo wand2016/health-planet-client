@@ -26,16 +26,17 @@ data "archive_file" "libs" {
   depends_on  = [null_resource.prepare_libs]
   type        = "zip"
   source_dir  = local.backend_libs_root
-  output_path = "./tmp/backend/node_modules-${filebase64sha256(local.backend_libs_lockfile)}.zip"
+  output_path = "./tmp/backend/libs.zip"
 
   excludes = ["src", "dist", ".env", "yarn.lock"]
 }
 
 resource "aws_lambda_layer_version" "lambda_layer" {
-  filename   = data.archive_file.libs.output_path
-  layer_name = "${local.name}-node-modules-layer"
-
+  filename            = data.archive_file.libs.output_path
+  layer_name          = "${local.name}-node-modules-layer"
   compatible_runtimes = [var.runtime]
+
+  source_code_hash = data.archive_file.libs.output_base64sha256
 }
 
 resource "null_resource" "build" {
@@ -79,13 +80,14 @@ resource "aws_iam_role" "iam_for_lambda" {
 }
 
 resource "aws_lambda_function" "app" {
-  filename      = data.archive_file.app.output_path
-  function_name = "${local.name}-lambda"
-  role          = aws_iam_role.iam_for_lambda.arn
-  handler       = "handler.main"
-  timeout       = 3
-  runtime       = var.runtime
-  layers        = [aws_lambda_layer_version.lambda_layer.arn]
+  filename         = data.archive_file.app.output_path
+  function_name    = "${local.name}-lambda"
+  role             = aws_iam_role.iam_for_lambda.arn
+  handler          = "handler.main"
+  timeout          = 3
+  runtime          = var.runtime
+  layers           = [aws_lambda_layer_version.lambda_layer.arn]
+  source_code_hash = data.archive_file.app.output_base64sha256
 
   tags = {
     Service : local.service
