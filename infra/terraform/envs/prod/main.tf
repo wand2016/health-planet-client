@@ -1,5 +1,5 @@
-module "layers-bucket" {
-  source = "../../modules/layers-bucket"
+module "web-s3" {
+  source  = "../../modules/s3"
   service = var.service
-  env = var.env
+  env     = var.env
 }
