@@ -1,6 +1,6 @@
 locals {
   service = "${var.service}-${var.env}"
-  name = "d-hori-${local.service}-web-s3"
+  name    = "d-hori-${local.service}-web-s3"
 }
 
 resource "aws_s3_bucket" "web" {
@@ -20,8 +20,8 @@ resource "aws_s3_bucket_acl" "default" {
 resource "aws_s3_bucket_object" "artifacts" {
   for_each = module.distribution_files.files
 
-  bucket = aws_s3_bucket.web.bucket
-  key =  each.key
+  bucket       = aws_s3_bucket.web.bucket
+  key          = each.key
   content_type = each.value.content_type
 
   source = each.value.source_path
@@ -30,7 +30,7 @@ resource "aws_s3_bucket_object" "artifacts" {
 }
 
 module "distribution_files" {
-  source = "registry.terraform.io/hashicorp/dir/template"
+  source   = "registry.terraform.io/hashicorp/dir/template"
   base_dir = "../../../../frontend/dist"
 
   depends_on = [null_resource.build]

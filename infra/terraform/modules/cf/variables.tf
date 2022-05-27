@@ -1,9 +1,9 @@
 variable "service" {
-  type    = string
+  type = string
 }
 
 variable "env" {
-  type    = string
+  type = string
 }
 
 variable "bucket_regional_domain_name" {

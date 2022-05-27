@@ -1,6 +1,6 @@
 locals {
   service = "${var.service}-${var.env}"
-  name = "d-hori-${local.service}-cf"
+  name    = "d-hori-${local.service}-cf"
 }
 
 resource "aws_cloudfront_origin_access_identity" "oai" {
@@ -35,9 +35,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   default_cache_behavior {
-    allowed_methods = ["GET", "HEAD"]
-    cached_methods  = ["GET", "HEAD"]
-    cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    cache_policy_id        = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
     target_origin_id       = var.bucket_regional_domain_name
     viewer_protocol_policy = "redirect-to-https"
   }
@@ -59,14 +59,14 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   wait_for_deployment = false # これを設定しないと、完全に使用できるようになる（＝ステータスがDeploymentになる）まで処理が終わらなくなる
 
   tags = {
-    Service: local.service
-    Name: local.name
+    Service : local.service
+    Name : local.name
   }
 }
 
 resource "null_resource" "invalidation" {
   triggers = {
-    src_hash = data.archive_file.dist.output_sha
+    src_hash    = data.archive_file.dist.output_sha
     check_value = timestamp()
   }
 
