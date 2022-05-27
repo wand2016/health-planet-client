@@ -53,7 +53,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   comment             = "CF"
-  default_root_object = "index.html" # for history API SPA Routing
+  default_root_object = "index.html"
+  custom_error_response {
+    error_code         = 403
+    response_code      = 200
+    response_page_path = "/index.html"  # for history API SPA Routing
+  }
   enabled             = true
   price_class         = "PriceClass_200"
   wait_for_deployment = false # これを設定しないと、完全に使用できるようになる（＝ステータスがDeploymentになる）まで処理が終わらなくなる
